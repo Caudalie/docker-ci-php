@@ -1,4 +1,4 @@
-FROM php:7.0-cli-stretch
+FROM php:7.2-cli-stretch
 
 MAINTAINER "Jeremy CURNY" <jeremy.curny.pro@gmail.com>
 
@@ -8,9 +8,9 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV MAGENTO2_PUB 6c7c3956d991c6459bcbf6d0d977514f
 ENV MAGENTO2_PRI 2319f30adac6169a5c30ad2cb564d177
 
-ENV FORCE_FULL_BUILD 20190919
+ENV FORCE_FULL_BUILD 20190730
 
-RUN  \
+RUN \
     apt-get update \
     && apt-get install -y \
         libfreetype6-dev libicu-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev libxml2-utils libxslt-dev \
@@ -22,9 +22,18 @@ RUN \
     && echo "phar.readonly=Off" >> /usr/local/etc/php/conf.d/php.ini
 
 RUN \
-    pecl install redis xdebug \
-    && docker-php-ext-enable redis xdebug \
-    && docker-php-ext-install bcmath gd gettext iconv intl mcrypt pdo_mysql soap sockets xsl zip
+    pecl install mcrypt redis xdebug \
+    && docker-php-ext-enable mcrypt redis xdebug \
+    && docker-php-ext-install bcmath gd gettext iconv intl pdo_mysql soap sockets xsl zip
+
+RUN \
+    curl -o libsodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz \
+    && tar xfvz libsodium.tar.gz \
+    && rm libsodium.tar.gz \
+    && cd libsodium-1.0.18 \
+    && ./configure \
+    && make && make install \
+    && pecl install -f libsodium
 
 RUN \
     mkdir -p ~/.ssh \
@@ -32,16 +41,16 @@ RUN \
     && echo "" > ~/.ssh/known_hosts \
     && echo "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n  LogLevel ERROR" > ~/.ssh/config
 
-RUN  \
+RUN \
     apt-get update \
     && apt-get install -y \
-        ack-grep dos2unix gettext git gnupg graphviz jq moreutils nano python python3 python-pip python3-pip shellcheck sshpass unzip zip \
+        ack-grep bsdmainutils dos2unix gettext git gnupg graphviz jq moreutils nano python python3 python-pip python3-pip shellcheck sshpass tree unzip zip \
         python-dev python3-dev \
     && apt-get clean autoclean autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
-    curl -sL -o /usr/local/bin/composer https://getcomposer.org/composer.phar \
+    curl -sL -o /usr/local/bin/composer https://getcomposer.org/download/1.10.1/composer.phar \
     && chmod +x /usr/local/bin/composer
 
 RUN \
@@ -65,11 +74,11 @@ RUN \
     && ln -s ~/.composer/vendor/bin/phpcpd /usr/local/bin/phpcpd \
     && composer global require phpmetrics/phpmetrics \
     && ln -s ~/.composer/vendor/bin/phpmetrics /usr/local/bin/phpmetrics
-
+   
 RUN \
     curl -sL -o /usr/local/bin/php-cs-fixer https://cs.symfony.com/download/php-cs-fixer-v2.phar \
     && chmod +x /usr/local/bin/php-cs-fixer
-
+   
 RUN \
     composer global config --auth http-basic.repo.magento.com $MAGENTO2_PUB $MAGENTO2_PRI \
     && composer create-project magento/magento-coding-standard ~/magento-coding-standard \
@@ -97,7 +106,7 @@ RUN \
 
 RUN \
     mkdir -p ~/eslint/standard ~/eslint/semistandard \
-    && npm install -g bower csslint eslint gulp grunt grunt-cli jshint jslint semistandard standard stylelint \
+    && npm install -g bower csslint eslint gulp grunt jshint jslint semistandard standard stylelint \
     && npm install -g eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard \
     && npm install -g eslint-config-standard eslint-config-semistandard \
     && npm install -g stylelint-config-standard \
