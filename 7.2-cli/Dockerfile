@@ -74,6 +74,9 @@ RUN \
     && ln -s ~/.composer/vendor/bin/phpcpd /usr/local/bin/phpcpd \
     && composer global require phpmetrics/phpmetrics \
     && ln -s ~/.composer/vendor/bin/phpmetrics /usr/local/bin/phpmetrics
+    
+RUN \
+    composer global require hirak/prestissimo
    
 RUN \
     curl -sL -o /usr/local/bin/php-cs-fixer https://cs.symfony.com/download/php-cs-fixer-v2.phar \
