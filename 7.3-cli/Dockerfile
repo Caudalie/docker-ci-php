@@ -5,15 +5,19 @@ MAINTAINER "Caudalie" <caudalie.com>
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV MAGENTO2_PUB 6c7c3956d991c6459bcbf6d0d977514f
-ENV MAGENTO2_PRI 2319f30adac6169a5c30ad2cb564d177
+
+ARG MAGENTO2_PUB
+ENV MAGENTO2_PUB $MAGENTO2_PUB
+
+ARG MAGENTO2_PRI
+ENV MAGENTO2_PRI $MAGENTO2_PRI
 
 ENV FORCE_FULL_BUILD 20200715
 
 RUN \
     apt-get update \
     && apt-get install -y \
-        libfreetype6-dev libicu-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev libxml2-utils libxslt-dev \
+        libfreetype6-dev libicu-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev libxml2-utils libxslt-dev  libzip-dev \
     && apt-get clean autoclean autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -44,7 +48,7 @@ RUN \
 RUN \
     apt-get update \
     && apt-get install -y \
-        ack-grep bsdmainutils dos2unix gettext git gnupg graphviz jq moreutils nano python python3 python-pip python3-pip shellcheck sshpass tree unzip zip \
+        ack-grep bash bsdmainutils dos2unix gettext git gnupg graphviz jq moreutils nano python python3 python-pip python3-pip shellcheck sshpass tree unzip zip \
         python-dev python3-dev \
     && apt-get clean autoclean autoremove -y \
     && rm -rf /var/lib/apt/lists/*

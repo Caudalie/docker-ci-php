@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker build -t caudalieweb/ci-php:7.2-cli --build-arg MAGENTO2_PUB="$MAGENTO2_PUB" --build-arg MAGENTO2_PRI="$MAGENTO2_PRI" .
