@@ -22,7 +22,7 @@ RUN  \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
-    echo "memory_limit=1024M" > /usr/local/etc/php/conf.d/php.ini \
+    echo "memory_limit=2048M" > /usr/local/etc/php/conf.d/php.ini \
     && echo "phar.readonly=Off" >> /usr/local/etc/php/conf.d/php.ini
 
 RUN \
