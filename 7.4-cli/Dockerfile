@@ -28,7 +28,7 @@ RUN \
 RUN \
     pecl install mcrypt redis xdebug \
     && docker-php-ext-enable mcrypt redis xdebug \
-    && docker-php-ext-install bcmath gd gettext iconv intl pdo_mysql soap sockets xsl zip
+    && docker-php-ext-install bcmath exif gd gettext iconv intl pdo_mysql soap sockets xsl zip
 
 RUN \
     curl -o libsodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz \
