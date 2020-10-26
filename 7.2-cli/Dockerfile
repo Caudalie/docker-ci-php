@@ -54,8 +54,11 @@ RUN \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
-    curl -sL -o /usr/local/bin/composer https://getcomposer.org/download/1.10.1/composer.phar \
+    curl -sL -o /usr/local/bin/composer https://getcomposer.org/download/1.10.16/composer.phar \
     && chmod +x /usr/local/bin/composer
+
+RUN \	
+    composer global require hirak/prestissimo	
 
 RUN \
     curl -sL -o /usr/local/bin/jsawk http://github.com/micha/jsawk/raw/master/jsawk \
